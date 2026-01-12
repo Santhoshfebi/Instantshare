@@ -79,7 +79,7 @@ export default function AdminLogin() {
         </form>
 
         <p className="mt-6 text-center text-gray-500 text-sm">
-          © 2026 Wedding Photographer
+          © 2026 SamFebi
         </p>
       </div>
     </div>
