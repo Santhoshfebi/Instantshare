@@ -10,7 +10,7 @@ export default function AdminEventDetail() {
   const [coverUrl, setCoverUrl] = useState('')
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
-  const [folder, setFolder] = useState('') // dynamic folder input
+  const [folder, setFolder] = useState('')
   const [existingFolders, setExistingFolders] = useState([])
   const dropRef = useRef(null)
 
@@ -20,7 +20,7 @@ export default function AdminEventDetail() {
     fetchPhotos()
   }, [])
 
-  // Update existing folders when photos change
+  // Update existing folders
   useEffect(() => {
     const folders = Array.from(
       new Set(photos.map(photo => photo.file_path.split('/')[1] || 'uncategorized'))
@@ -28,7 +28,7 @@ export default function AdminEventDetail() {
     setExistingFolders(folders)
   }, [photos])
 
-  // Drag-and-drop listeners
+  // Drag & drop
   useEffect(() => {
     const div = dropRef.current
     if (!div) return
@@ -57,17 +57,14 @@ export default function AdminEventDetail() {
     }
   }, [dropRef, folder])
 
-  // Fetch event info
   const fetchEvent = async () => {
     const { data } = await supabase.from('events').select('*').eq('id', id).single()
     setEvent(data)
 
-    // Cover image
     const { data: coverData } = supabase.storage.from('wedding-events').getPublicUrl(`${id}/cover.jpg`)
     setCoverUrl(coverData.publicUrl)
   }
 
-  // Fetch photos
   const fetchPhotos = async () => {
     const { data } = await supabase
       .from('photos')
@@ -77,7 +74,6 @@ export default function AdminEventDetail() {
     setPhotos(data || [])
   }
 
-  // Upload files
   const uploadFiles = async (files) => {
     if (!folder.trim()) {
       setError('Please enter a folder name.')
@@ -104,7 +100,6 @@ export default function AdminEventDetail() {
     uploadFiles(files)
   }
 
-  // Delete image
   const handleDelete = async (photo) => {
     if (!confirm('Are you sure you want to delete this image?')) return
     try {
@@ -120,11 +115,13 @@ export default function AdminEventDetail() {
     }
   }
 
-  // Download QR
+  // QR code URL uses environment variable
   const baseUrl = import.meta.env.VITE_APP_BASE_URL
-  const qrValue =  `${baseUrl}/event/${event?.slug}`
+  const qrValue = event ? `${baseUrl}/event/${event.slug.trim().toLowerCase()}` : ''
+
   const downloadQR = () => {
     const canvas = document.getElementById('qrCodeCanvas')
+    if (!canvas) return
     const pngUrl = canvas.toDataURL('image/png')
     const link = document.createElement('a')
     link.href = pngUrl
@@ -136,7 +133,6 @@ export default function AdminEventDetail() {
 
   if (!event) return <p className="text-gray-600">Loading...</p>
 
-  // Group photos by folder
   const groupedPhotos = photos.reduce((acc, photo) => {
     const parts = photo.file_path.split('/')
     const folderName = parts[1] || 'uncategorized'

@@ -8,7 +8,7 @@ export default function PublicGallery() {
   const [photos, setPhotos] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [selectedImage, setSelectedImage] = useState(null) // modal view
+  const [selectedImage, setSelectedImage] = useState(null)
 
   useEffect(() => {
     fetchEventAndPhotos()
@@ -17,16 +17,15 @@ export default function PublicGallery() {
   const fetchEventAndPhotos = async () => {
     setLoading(true)
     try {
-      // Fetch event
+      // Case-insensitive slug lookup
       const { data: eventData, error: eventError } = await supabase
         .from('events')
         .select('*')
-        .eq('slug', slug)
+        .ilike('slug', slug.trim().toLowerCase())
         .single()
       if (eventError) throw eventError
       setEvent(eventData)
 
-      // Fetch photos
       const { data: photoData, error: photoError } = await supabase
         .from('photos')
         .select('*')
@@ -44,7 +43,6 @@ export default function PublicGallery() {
   if (error) return <p className="text-red-600 text-center mt-8">{error}</p>
   if (!event) return <p className="text-gray-500 text-center mt-8">Event not found.</p>
 
-  // Group photos by folder
   const groupedPhotos = photos.reduce((acc, photo) => {
     const parts = photo.file_path.split('/')
     const folderName = parts[1] || 'Uncategorized'
@@ -55,7 +53,6 @@ export default function PublicGallery() {
 
   return (
     <div className="max-w-6xl mx-auto p-4 space-y-6">
-      {/* Event Info */}
       <div className="text-center">
         <h1 className="text-3xl font-bold text-gray-800">{event.name}</h1>
         {event.event_date && (
@@ -63,7 +60,6 @@ export default function PublicGallery() {
         )}
       </div>
 
-      {/* Gallery */}
       {Object.keys(groupedPhotos).length === 0 ? (
         <p className="text-gray-500 text-center">No photos uploaded yet.</p>
       ) : (
@@ -104,14 +100,12 @@ export default function PublicGallery() {
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
           <div className="relative max-w-3xl w-full mx-4">
             <img src={selectedImage} alt="Selected" className="w-full max-h-[80vh] object-contain rounded-lg" />
-            {/* Close Button */}
             <button
               onClick={() => setSelectedImage(null)}
               className="absolute top-2 right-2 bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 transition"
             >
               Close
             </button>
-            {/* Download Button */}
             <a
               href={selectedImage}
               download
