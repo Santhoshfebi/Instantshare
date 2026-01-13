@@ -52,7 +52,7 @@ export default function PublicGallery() {
   }, {})
 
   return (
-    <div className="max-w-6xl mx-auto p-4 space-y-6">
+    <div className="public-gallery max-w-6xl mx-auto p-4 space-y-6">
       <div className="text-center">
         <h1 className="text-3xl font-bold text-gray-800">{event.name}</h1>
         {event.event_date && (

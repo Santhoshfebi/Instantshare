@@ -1,2 +1,10 @@
 @import "tailwindcss";
 
+.public-gallery {
+  font-family: 'Inter', sans-serif;
+}
+
+.public-gallery h1,
+.public-gallery h2 {
+  font-family: 'Playfair Display', serif;
+}
