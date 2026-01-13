@@ -5,6 +5,8 @@
 }
 
 .public-gallery h1,
-.public-gallery h2 {
+.public-gallery h2,
+.public-gallery p {
   font-family: 'Playfair Display', serif;
 }
+

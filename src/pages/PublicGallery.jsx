@@ -56,7 +56,7 @@ export default function PublicGallery() {
       <div className="text-center">
         <h1 className="text-3xl font-bold text-gray-800">{event.name}</h1>
         {event.event_date && (
-          <p className="text-gray-500 mt-1 text-2xl">{new Date(event.event_date).toLocaleDateString()}</p>
+          <p className="public-gallery text-gray-500 mt-1 text-2xl">{new Date(event.event_date).toLocaleDateString()}</p>
         )}
       </div>
 
